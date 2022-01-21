@@ -16,11 +16,6 @@ variables:
   GitVersion.SemVer: ''
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
 
 - task: gitversion/setup@0
   inputs:
@@ -34,8 +29,9 @@ steps:
     projects: '$(solution)'
     configuration: '$(buildConfiguration)'
     versioningScheme: byEnvVar
-    versionEnvVar: 'GitVersion.SemVer'
+    versionEnvVar: GitVersion.NuGetVersion
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
+    nobuild: true

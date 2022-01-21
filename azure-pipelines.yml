@@ -31,11 +31,13 @@ steps:
     arguments: '-p:Version=$(GitVersion.SemVer)'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'GitVersion.NuGetVersion'
+    configuration: Release
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     nobuild: true
+    configuration: Release
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -45,6 +47,7 @@ steps:
     includesource: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'GitVersion.NuGetVersion'
+    nobuild: true
 
 - task: PublishBuildArtifacts@1
   inputs:

@@ -6,10 +6,6 @@
 trigger:
 - master
 
-
-
-
-
 pool:
   vmImage: 'windows-latest'
 
@@ -17,6 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  GitVersion.SemVer: ''
 
 steps:
 - task: NuGetToolInstaller@1
@@ -30,16 +27,15 @@ steps:
     versionSpec: '5.x'
 
 - task: gitversion/execute@0
-  inputs:
-    updateAssemblyInfo: true
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
   inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
+    command: 'build'
+    projects: '$(solution)'
     configuration: '$(buildConfiguration)'
+    versioningScheme: byEnvVar
+    versionEnvVar: 'GitVersion.SemVer'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'test'

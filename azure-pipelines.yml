@@ -6,6 +6,10 @@
 trigger:
 - master
 
+
+
+
+
 pool:
   vmImage: 'windows-latest'
 
@@ -20,6 +24,14 @@ steps:
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
+
+- task: gitversion/setup@0
+  inputs:
+    versionSpec: '5.x'
+
+- task: gitversion/execute@0
+  inputs:
+    updateAssemblyInfo: true
 
 - task: VSBuild@1
   inputs:

@@ -21,14 +21,6 @@ steps:
 
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'build'
-    projects: '$(solution)'
-    configuration: '$(buildConfiguration)'
-    versioningScheme: byEnvVar
-    versionEnvVar: GitVersion.NuGetVersion
-
-- task: DotNetCoreCLI@2
-  inputs:
     command: 'test'
     nobuild: true
 
@@ -36,7 +28,6 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
-    nobuild: true
     includesymbols: true
     includesource: true
     versioningScheme: 'byEnvVar'

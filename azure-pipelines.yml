@@ -41,15 +41,13 @@ steps:
     nobuild: true
     arguments: '-c Release'
 
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
-    includesymbols: true
-    includesource: true
     versioningScheme: 'byEnvVar'
-    versionEnvVar: 'GitVersion.NuGetVersion'
-    nobuild: true
+    versionEnvVar: 'GitVersion.FullSemVer'
+    includeSymbols: true
 
 - task: PublishPipelineArtifact@1
   inputs:

@@ -21,13 +21,26 @@ steps:
 
 - task: DotNetCoreCLI@2
   inputs:
+    command: 'restore'
+    arguments: '-p:Version=$(GitVersion.SemVer)'
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    arguments: '-p:Version=$(GitVersion.SemVer)'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'GitVersion.NuGetVersion'
+
+- task: DotNetCoreCLI@2
+  inputs:
     command: 'test'
     nobuild: true
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: '**/*.csproj'
+    packagesToPack: 'zxcvbn-core/zxcvbn-core.csproj'
     includesymbols: true
     includesource: true
     versioningScheme: 'byEnvVar'

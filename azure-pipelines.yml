@@ -31,23 +31,19 @@ steps:
 
 - task: DotNetCoreCLI@2
   inputs:
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    includesymbols: true
+    includesource: true
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'GitVersion.NuGetVersion'
+    nobuild: true
+
+- task: DotNetCoreCLI@2
+  inputs:
     command: 'test'
     nobuild: true
     arguments: '-c Release'
-
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.SourcesDirectory)'
-    artifact: 'source'
-    publishLocation: 'pipeline'
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/zxcvbn-core.csproj'
-    versioningScheme: 'byEnvVar'
-    versionEnvVar: 'GitVersion.FullSemVer'
-    includeSymbols: true
 
 - task: PublishPipelineArtifact@1
   inputs:

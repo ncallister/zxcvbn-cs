@@ -29,6 +29,12 @@ steps:
     command: 'build'
     arguments: '-p:Version=$(GitVersion.SemVer) -c Release'
 
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)'
+    artifact: 'source'
+    publishLocation: 'pipeline'
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
@@ -45,14 +51,8 @@ steps:
     versionEnvVar: 'GitVersion.NuGetVersion'
     nobuild: true
 
-- task: PublishBuildArtifacts@1
+- task: PublishPipelineArtifact@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.SourcesDirectory)'
-    ArtifactName: 'source'
-    publishLocation: 'Container'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'drop'
+    publishLocation: 'pipeline'

@@ -40,7 +40,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: 'zxcvbn-core/zxcvbn-core.csproj'
+    packagesToPack: '**/*.csproj'
     includesymbols: true
     includesource: true
     versioningScheme: 'byEnvVar'

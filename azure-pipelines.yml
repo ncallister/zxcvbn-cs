@@ -32,6 +32,8 @@ stages:
         inputs:
           command: 'restore'
           projects: '**/*.csproj'
+      
+      - script: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.0.2
 
       - task: DotNetCoreCLI@2
         displayName: Build the Library
@@ -55,7 +57,14 @@ stages:
         inputs:
           command: 'test'
           nobuild: true
-          arguments: '-c Release'
+          arguments: '-c Release -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput=$(Agent.TempDirectory)/coverage/'
+
+      - task: DotNetCoreCLI@2
+        displayName: Generate coverage report
+        inputs:
+          command: custom
+          custom: reportgenerator
+          arguments: '"-reports:$(Agent.TempDirectory)/coverage/coverage.cobertura.xml" "-targetDir:$(Agent.TempDirectory)/coverage/reports" -tag:$(Build.BuildNumber) -reportTypes:htmlInline'
 
       - task: PublishPipelineArtifact@1
         displayName: Publish the staged packages
@@ -63,6 +72,13 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)'
           artifact: 'drop'
           publishLocation: 'pipeline'
+
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: 'cobertura'
+          summaryFileLocation: $(Agent.TempDirectory)/coverage/coverage.cobertura.xml
+          reportDirectory: $(Agent.TempDirectory)/coverage/reports
+          failIfCoverageEmpty: false 
 
 - stage: Publish
   jobs:

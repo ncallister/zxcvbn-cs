@@ -59,12 +59,7 @@ stages:
           nobuild: true
           arguments: '-c Release -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput=$(Agent.TempDirectory)/coverage/'
 
-      - task: DotNetCoreCLI@2
-        displayName: Generate coverage report
-        inputs:
-          command: custom
-          custom: reportgenerator
-          arguments: '"-reports:$(Agent.TempDirectory)/coverage/coverage.cobertura.xml" "-targetDir:$(Agent.TempDirectory)/coverage/reports" -tag:$(Build.BuildNumber) -reportTypes:htmlInline'
+      - script: reportgenerator "-reports:$(Agent.TempDirectory)/coverage/coverage.cobertura.xml" "-targetDir:$(Agent.TempDirectory)/coverage/reports" -tag:$(Build.BuildNumber) -reportTypes:htmlInline
 
       - task: PublishPipelineArtifact@1
         displayName: Publish the staged packages

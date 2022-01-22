@@ -79,14 +79,20 @@ stages:
           - task: DotNetCoreCLI@2
             displayName: 'dotnet push (nuget.org)'
             inputs:
-              command: push
-              nuGetFeedType: external
+              command: 'push'
+              packagesToPush: '$(Agent.BuildDirectory)/drop/*.nupkg'
+              nuGetFeedType: 'external'
               publishFeedCredentials: 'Nuget zxcvbn-core'
           - task: GitHubRelease@1
             displayName: 'GitHub release (create)'
             inputs:
               gitHubConnection: 'github connection 1'
               repositoryName: 'trichards57/zxcvbn-cs'
+              action: 'create'
+              target: '$(Build.SourceVersion)'
+              tagSource: 'gitTag'
+              tagPattern: '*'
+              releaseNotesSource: 'inline'
               isDraft: true
               isPreRelease: true
               addChangeLog: false
@@ -95,5 +101,7 @@ stages:
             displayName: 'dotnet push (GitHub)'
             inputs:
               command: push
+              packagesToPush: '$(Agent.BuildDirectory)/drop/*.nupkg'
               nuGetFeedType: external
               publishFeedCredentials: 'Github Nuget Packages'
+            condition: succeededOrFailed()

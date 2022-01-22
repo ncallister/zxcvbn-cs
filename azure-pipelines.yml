@@ -66,10 +66,10 @@ stages:
 
 - stage: Publish
   jobs:
-  - deployment: NuGetPreRelease
-    displayName: NuGet (Pre-Release)
-    environment: NuGet (Pre-Release)
-    condition: variables['isRelease']
+  - deployment: NuGet
+    displayName: NuGet
+    environment: NuGet
+    condition: and(succeeded(), or(variables['isRelease'], variables['isMaster']))
     strategy:
       runOnce:
         deploy:
@@ -87,35 +87,6 @@ stages:
               repositoryName: 'trichards57/zxcvbn-cs'
               isDraft: true
               isPreRelease: true
-              addChangeLog: false
-            condition: succeededOrFailed()
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet push (GitHub)'
-            inputs:
-              command: push
-              nuGetFeedType: external
-              publishFeedCredentials: 'Github Nuget Packages'
-  - deployment: NuGetRelease
-    displayName: NuGet (Release)
-    environment: NuGet (Release)
-    condition: variables['isMaster']
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet push (nuget.org)'
-            inputs:
-              command: push
-              nuGetFeedType: external
-              publishFeedCredentials: 'Nuget zxcvbn-core'
-          - task: GitHubRelease@1
-            displayName: 'GitHub release (create)'
-            inputs:
-              gitHubConnection: 'github connection 1'
-              repositoryName: 'trichards57/zxcvbn-cs'
-              isDraft: false
-              isPreRelease: false
               addChangeLog: false
             condition: succeededOrFailed()
           - task: DotNetCoreCLI@2

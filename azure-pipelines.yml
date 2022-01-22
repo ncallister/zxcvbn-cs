@@ -74,6 +74,8 @@ stages:
       runOnce:
         deploy:
           steps:
+          - download: current
+            artifact: 'drop'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet push (nuget.org)'
             inputs:

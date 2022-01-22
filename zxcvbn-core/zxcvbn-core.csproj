@@ -7,8 +7,9 @@
 		<Description>C#/.NET port of Dan Wheeler/DropBox's Zxcvbn JS password strength estimation library.  Updated for .Net Core.</Description>
 		<PackageProjectUrl>https://github.com/trichards57/zxcvbn-cs</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/trichards57/zxcvbn-cs.git</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageTags>password;strength;validation;zxcvbn</PackageTags>
-		<Copyright>Copyright (c) 2012 Dropbox, Inc. Copyright (c) 2020-2021 Tony Richards</Copyright>
+		<Copyright>Copyright (c) 2012 Dropbox, Inc. Copyright (c) 2020-2022 Tony Richards</Copyright>
 		<RootNamespace>Zxcvbn</RootNamespace>
 		<DocumentationFile>$(TargetDir)zxcvbn-core.xml</DocumentationFile>
 		<SignAssembly>true</SignAssembly>
@@ -24,18 +25,9 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<None Include="..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-		<None Include="..\README.md">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-		<None Include="..\CHANGELOG.md">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
+		<None Include="..\LICENSE"  Pack="True" PackagePath="/" />
+		<None Include="..\README.md" Pack="True" PackagePath="/" />
+		<None Include="..\CHANGELOG.md" Pack="True" PackagePath="/" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 </Project>

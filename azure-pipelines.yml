@@ -11,43 +11,116 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   GitVersion.SemVer: ''
+  isMaster: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isRelease: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')]
 
-steps:
+stages:
+- stage: Build
+  jobs:
+    - job: BuildJob
+      steps:
+      - task: gitversion/setup@0
+        displayName: Setup GitVersion (5.x)
+        inputs:
+          versionSpec: '5.x'
 
-- task: gitversion/setup@0
-  inputs:
-    versionSpec: '5.x'
+      - task: gitversion/execute@0
+        displayName: Run GitVersion
 
-- task: gitversion/execute@0
+      - task: DotNetCoreCLI@2
+        displayName: Restore NuGet Packages
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
+      - task: DotNetCoreCLI@2
+        displayName: Build the Library
+        inputs:
+          command: 'build'
+          arguments: '-p:Version=$(GitVersion.SemVer) -c Release'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    arguments: '-p:Version=$(GitVersion.SemVer) -c Release'
+      - task: DotNetCoreCLI@2
+        displayName: Package the Library and source
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/*.csproj'
+          includesymbols: true
+          includesource: true
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'GitVersion.NuGetVersion'
+          nobuild: true
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/*.csproj'
-    includesymbols: true
-    includesource: true
-    versioningScheme: 'byEnvVar'
-    versionEnvVar: 'GitVersion.NuGetVersion'
-    nobuild: true
+      - task: DotNetCoreCLI@2
+        displayName: Run the tests
+        inputs:
+          command: 'test'
+          nobuild: true
+          arguments: '-c Release'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    nobuild: true
-    arguments: '-c Release'
+      - task: PublishPipelineArtifact@1
+        displayName: Publish the staged packages
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifact: 'drop'
+          publishLocation: 'pipeline'
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)'
-    artifact: 'drop'
-    publishLocation: 'pipeline'
+- stage: Publish
+  jobs:
+  - deployment: NuGetPreRelease
+    displayName: NuGet (Pre-Release)
+    environment: NuGet (Pre-Release)
+    condition: variables['isRelease']
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push (nuget.org)'
+            inputs:
+              command: push
+              nuGetFeedType: external
+              publishFeedCredentials: 'Nuget zxcvbn-core'
+          - task: GitHubRelease@1
+            displayName: 'GitHub release (create)'
+            inputs:
+              gitHubConnection: 'github connection 1'
+              repositoryName: 'trichards57/zxcvbn-cs'
+              isDraft: true
+              isPreRelease: true
+              addChangeLog: false
+            condition: succeededOrFailed()
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push (GitHub)'
+            inputs:
+              command: push
+              nuGetFeedType: external
+              publishFeedCredentials: 'Github Nuget Packages'
+  - deployment: NuGetRelease
+    displayName: NuGet (Release)
+    environment: NuGet (Release)
+    condition: variables['isMaster']
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push (nuget.org)'
+            inputs:
+              command: push
+              nuGetFeedType: external
+              publishFeedCredentials: 'Nuget zxcvbn-core'
+          - task: GitHubRelease@1
+            displayName: 'GitHub release (create)'
+            inputs:
+              gitHubConnection: 'github connection 1'
+              repositoryName: 'trichards57/zxcvbn-cs'
+              isDraft: false
+              isPreRelease: false
+              addChangeLog: false
+            condition: succeededOrFailed()
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push (GitHub)'
+            inputs:
+              command: push
+              nuGetFeedType: external
+              publishFeedCredentials: 'Github Nuget Packages'

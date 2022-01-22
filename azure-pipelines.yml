@@ -74,34 +74,36 @@ stages:
       runOnce:
         deploy:
           steps:
-          - download: current
-            artifact: 'drop'
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet push (nuget.org)'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'drop'
+              targetPath: '$(Build.ArtifactStagingDirectory)'
+          - task: NuGetCommand@2
+            displayName: 'NuGet push (nuget.org)'
             inputs:
               command: 'push'
-              packagesToPush: '$(Agent.BuildDirectory)/drop/*.nupkg'
+              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
               nuGetFeedType: 'external'
               publishFeedCredentials: 'Nuget zxcvbn-core'
           - task: GitHubRelease@1
-            displayName: 'GitHub release (create)'
             inputs:
               gitHubConnection: 'github connection 1'
               repositoryName: 'trichards57/zxcvbn-cs'
               action: 'create'
               target: '$(Build.SourceVersion)'
-              tagSource: 'gitTag'
-              tagPattern: '*'
+              tagSource: 'userSpecifiedTag'
+              tag: '$(GitVersion.SemVer)'
               releaseNotesSource: 'inline'
               isDraft: true
               isPreRelease: true
               addChangeLog: false
             condition: succeededOrFailed()
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet push (GitHub)'
+          - task: NuGetCommand@2
+            displayName: 'NuGet push (GitHub)'
             inputs:
-              command: push
-              packagesToPush: '$(Agent.BuildDirectory)/drop/*.nupkg'
-              nuGetFeedType: external
+              command: 'push'
+              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+              nuGetFeedType: 'external'
               publishFeedCredentials: 'Github Nuget Packages'
             condition: succeededOrFailed()

@@ -1,33 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461;netstandard1.3</TargetFrameworks>
-    <PackageId>zxcvbn-core</PackageId>
-    <Authors>mickford;Tony Richards (trichards57);Dan Wheeler;DropBox</Authors>
-    <Product>zxcvbn-core</Product>
-    <Description>C#/.NET port of Dan Wheeler/DropBox's Zxcvbn JS password strength estimation library.  Updated for .Net Core.</Description>
-    <PackageProjectUrl>https://github.com/trichards57/zxcvbn-cs</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/trichards57/zxcvbn-cs.git</RepositoryUrl>
-    <PackageTags>password;strength;validation;zxcvbn</PackageTags>
-    <Copyright>Copyright (c) 2012 Dropbox, Inc. Copyright (c) 2020-2021 Tony Richards</Copyright>
-    <RootNamespace>Zxcvbn</RootNamespace>
-    <DocumentationFile>$(TargetDir)zxcvbn-core.xml</DocumentationFile>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>zxcvbn-strong-name-key.snk</AssemblyOriginatorKeyFile>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-  </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dictionaries\*.lst" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net461;netstandard1.3</TargetFrameworks>
+		<PackageId>zxcvbn-core</PackageId>
+		<Authors>mickford;Tony Richards (trichards57);Dan Wheeler;DropBox</Authors>
+		<Product>zxcvbn-core</Product>
+		<Description>C#/.NET port of Dan Wheeler/DropBox's Zxcvbn JS password strength estimation library.  Updated for .Net Core.</Description>
+		<PackageProjectUrl>https://github.com/trichards57/zxcvbn-cs</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/trichards57/zxcvbn-cs.git</RepositoryUrl>
+		<PackageTags>password;strength;validation;zxcvbn</PackageTags>
+		<Copyright>Copyright (c) 2012 Dropbox, Inc. Copyright (c) 2020-2021 Tony Richards</Copyright>
+		<RootNamespace>Zxcvbn</RootNamespace>
+		<DocumentationFile>$(TargetDir)zxcvbn-core.xml</DocumentationFile>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>zxcvbn-strong-name-key.snk</AssemblyOriginatorKeyFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	</PropertyGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Dictionaries\*.lst" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\CHANGELOG.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+	</ItemGroup>
 </Project>

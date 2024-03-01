@@ -56,5 +56,27 @@ namespace Zxcvbn.Tests.Core
             var warning = "Names and surnames by themselves are easy to guess";
             result.Feedback.Warning.Should().BeEquivalentTo(warning);
         }
+
+        [Fact]
+        public void AllUppercaseShouldBeRecognisedDistinctFromCapitalisation()
+        {
+            // Capitalization
+            var result = Zxcvbn.Core.EvaluatePassword("Where");
+            var defaultFeedback = new[]
+            {
+                "Add another word or two.  Uncommon words are better.",
+                "Capitalization doesn't help very much",
+            };
+            result.Feedback.Suggestions.Should().BeEquivalentTo(defaultFeedback);
+            
+            // All uppercase
+            result = Zxcvbn.Core.EvaluatePassword("WHERE");
+            defaultFeedback = new[]
+            {
+                "Add another word or two.  Uncommon words are better.",
+                "All-uppercase is almost as easy to guess as all-lowercase",
+            };
+            result.Feedback.Suggestions.Should().BeEquivalentTo(defaultFeedback);
+        }
     }
 }

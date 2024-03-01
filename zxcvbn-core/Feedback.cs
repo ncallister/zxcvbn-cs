@@ -94,10 +94,10 @@ namespace Zxcvbn
 
             var suggestions = new List<string>();
             var word = match.Token;
-            if (char.IsUpper(word[0]))
-                suggestions.Add("Capitalization doesn't help very much");
-            else if (word.All(c => char.IsUpper(c)) && word.ToLower() != word)
+            if (word.All(char.IsUpper) && word.ToLower() != word)
                 suggestions.Add("All-uppercase is almost as easy to guess as all-lowercase");
+            else if (char.IsUpper(word[0]))
+                suggestions.Add("Capitalization doesn't help very much");
 
             if (match.Reversed && match.Token.Length >= 4)
                 suggestions.Add("Reversed words aren't much harder to guess");

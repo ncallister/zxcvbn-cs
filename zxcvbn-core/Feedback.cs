@@ -94,7 +94,7 @@ namespace Zxcvbn
 
             var suggestions = new List<string>();
             var word = match.Token;
-            if (word.All(char.IsUpper) && word.ToLower() != word)
+            if (word.All(c => char.IsUpper(c)) && word.ToLower() != word)
                 suggestions.Add("All-uppercase is almost as easy to guess as all-lowercase");
             else if (char.IsUpper(word[0]))
                 suggestions.Add("Capitalization doesn't help very much");
